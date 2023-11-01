@@ -20,16 +20,16 @@ export class OrdersController {
     return this.orderService.getAll();
   }
   @Get('/:id')
-  getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    if (!this.orderService.getById(id))
-      throw new NotFoundException('Order not found');
-    return this.orderService.getById(id);
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const order = await this.orderService.getById(id);
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
   }
   @Delete('/:id')
-  delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    if (!this.orderService.getById(id))
-      throw new NotFoundException('Order not found');
-    this.orderService.delete(id);
+  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
+    const order = await this.orderService.getById(id);
+    if (!order) throw new NotFoundException('Product not found');
+    await this.orderService.delete(id);
     return { sucess: true };
   }
   @Post('/')
@@ -37,13 +37,13 @@ export class OrdersController {
     return this.orderService.create(orderData);
   }
   @Put('/:id')
-  edit(
+  async edit(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() orderData: UpdateOrderDTO,
   ) {
-    if (!this.orderService.getById(id))
+    if (!(await this.orderService.getById(id)))
       throw new NotFoundException('Order not found');
-    this.orderService.edit(id, orderData);
+    await this.orderService.edit(id, orderData);
     return { sucess: true };
   }
 }
