@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggerInterceptor());
   app.setGlobalPrefix('api');
 
-  await app.enableShutdownHooks(); // helps with shutting down connection to the database
+  app.enableShutdownHooks(); // helps with shutting down connection to the database
 
   await app.listen(8000);
 }

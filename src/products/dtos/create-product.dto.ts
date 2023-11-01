@@ -10,10 +10,14 @@ export class CreateProductDTO {
   @IsNotEmpty()
   @IsInt()
   @Min(0)
+  @Transform(({ value }) => {
+    console.log('Original Value:', value);
+    const transformed = parseInt(value, 10);
+    console.log('Transformed Value:', transformed);
+    return transformed;
+  })
   price: number;
 
-  @IsNotEmpty()
-  @IsString()
   @Transform(({ value }) => (Array.isArray(value) ? value.join(', ') : ''))
   description: string;
 }
