@@ -40,21 +40,38 @@ function getOrders() {
   return [
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17260',
-      client: 'John Doe',
-      address: '123 Main Street, London',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a00000',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17261',
-      client: 'Jane Doe',
-      address: '123 Main Street, London',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a00001',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17262',
-      client: 'Thomas Jefferson',
-      address: 'Baker Street 12B, New York',
       productId: '01c7599d-318b-4b9f-baf7-51f3a936a2d4',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a00002',
+    },
+  ];
+}
+
+function getClients() {
+  return [
+    {
+      id: 'fd105551-0f0d-4a9f-bc41-c559c8a00000',
+      name: 'Alice NoName',
+      address: 'Washington Street 33/8 New York USA',
+    },
+    {
+      id: 'fd105551-0f0d-4a9f-bc41-c559c8a00001',
+      name: 'Bob Smith',
+      address: 'Springfield Blvd 44/2 Chicago USA',
+    },
+    {
+      id: 'fd105551-0f0d-4a9f-bc41-c559c8a00002',
+      name: 'Carol Jones',
+      address: 'Sunset Boulevard 101/5 Los Angeles USA',
     },
   ];
 }
@@ -65,14 +82,22 @@ async function seed() {
       return db.product.create({ data: product });
     }),
   );
+  await Promise.all(
+    getClients().map((client) => {
+      return db.client.create({ data: client });
+    }),
+  );
 
   await Promise.all(
-    getOrders().map(({ productId, ...orderData }) => {
+    getOrders().map(({ productId, clientId, ...orderData }) => {
       return db.order.create({
         data: {
           ...orderData,
           product: {
             connect: { id: productId },
+          },
+          client: {
+            connect: { id: clientId },
           },
         },
       });
