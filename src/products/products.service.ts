@@ -13,6 +13,16 @@ export class ProductsService {
       where: { id },
     });
   }
+  public getExtended(): Promise<Product[]> {
+    return this.prismaService.product.findMany({ include: { orders: true } });
+  }
+  public getExtendedById(id: Product['id']): Promise<Product | null> {
+    return this.prismaService.product.findUnique({
+      where: { id },
+      include: { orders: true },
+    });
+  }
+
   public delete(id: Product['id']): Promise<Product> {
     return this.prismaService.product.delete({
       where: { id },
